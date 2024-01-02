@@ -23,7 +23,7 @@ jobs:
           git clone https://github.com/zrax/pycdc.git pycdc
       - name: Determine CPU core count
         id: cpu_count
-        run: echo "::set-output name=cpu_count::$(nproc)"
+        run: echo "cpu_count=$(nproc)" >> $GITHUB_OUTPUT
       # Runs a set of commands using the runners shell
       - name: build
         working-directory: ./pycdc
