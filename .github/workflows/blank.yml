@@ -32,8 +32,8 @@ jobs:
         working-directory: ./pycdc
         run: |
           mkdir build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Release ..
-          make -j2
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static" ..
+          make
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
