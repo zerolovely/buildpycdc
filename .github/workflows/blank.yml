@@ -30,9 +30,9 @@ jobs:
         run: |
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static" ..
-          make -j"${{ steps.cpu_count.outputs.cpu_count }}"
+          make -j${{ steps.cpu_count.outputs.cpu_count }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pycdc
           path: ./pycdc/build/*
