@@ -10,29 +10,43 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  Linux-build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: get source
         run: |
           git clone https://github.com/zrax/pycdc.git pycdc
-      - name: Determine CPU core count
-        id: cpu_count
-        run: echo "cpu_count=$(nproc)" >> $GITHUB_OUTPUT
-      # Runs a set of commands using the runners shell
       - name: build
         working-directory: ./pycdc
         run: |
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-static" ..
-          make -j${{ steps.cpu_count.outputs.cpu_count }}
+          make -j$(nproc)
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pycdc
+          name: pycdc-linux
           path: ./pycdc/build/*
+
+  Windows-build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure and Build
+        run: |
+          git clone https://github.com/zrax/pycdc.git pycdc
+          cd pycdc
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" -A Win32 ..
+          cmake --build . --config Release
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pycdc-windows
+          path: .\pycdc\build\Release\*
